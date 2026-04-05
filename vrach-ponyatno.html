@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ВрачПонятно / DoctorPlain</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1D9E75;
+    --green-light: #E1F5EE;
+    --green-dark: #085041;
+    --teal: #0F6E56;
+    --bg: #f7faf9;
+    --white: #ffffff;
+    --text: #1a1a1a;
+    --text-muted: #5a6a64;
+    --border: #d0e8df;
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Manrope', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--green-dark);
+    line-height: 1.2;
+  }
+
+  .logo span {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--green);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+  }
+
+  .lang-toggle {
+    display: flex;
+    gap: 6px;
+  }
+
+  .lang-btn {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+
+  .lang-btn.active {
+    background: var(--green);
+    color: white;
+    border-color: var(--green);
+  }
+
+  .hero {
+    text-align: center;
+    padding: 3.5rem 2rem 2.5rem;
+  }
+
+  .hero h1 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 600;
+    color: var(--green-dark);
+    line-height: 1.3;
+    margin-bottom: 0.75rem;
+  }
+
+  .hero p {
+    color: var(--text-muted);
+    font-size: 1rem;
+    max-width: 480px;
+    margin: 0 auto 2rem;
+    line-height: 1.7;
+  }
+
+  .audience-toggle {
+    display: inline-flex;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 40px;
+    padding: 5px;
+    gap: 4px;
+    margin-bottom: 2rem;
+  }
+
+  .audience-btn {
+    padding: 10px 24px;
+    border-radius: 30px;
+    border: none;
+    background: transparent;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.25s;
+  }
+
+  .audience-btn.active {
+    background: var(--green);
+    color: white;
+  }
+
+  .search-bar {
+    display: flex;
+    max-width: 540px;
+    margin: 0 auto;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 40px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .search-bar:focus-within {
+    border-color: var(--green);
+  }
+
+  .search-bar input {
+    flex: 1;
+    padding: 14px 20px;
+    border: none;
+    background: transparent;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    outline: none;
+  }
+
+  .search-bar input::placeholder { color: var(--text-muted); }
+
+  .search-bar button {
+    padding: 10px 22px;
+    margin: 5px;
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .search-bar button:hover { background: var(--teal); }
+
+  .diagnoses {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .diagnosis-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+
+  .diagnosis-card:hover {
+    border-color: var(--green);
+  }
+
+  .card-header {
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    gap: 1rem;
+  }
+
+  .card-header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--green-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+
+  .card-title {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--green-dark);
+    line-height: 1.3;
+  }
+
+  .card-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .card-arrow {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.25s, background 0.2s;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+  }
+
+  .diagnosis-card.open .card-arrow {
+    transform: rotate(180deg);
+    background: var(--green-light);
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .card-body {
+    display: none;
+    border-top: 1.5px solid var(--border);
+  }
+
+  .diagnosis-card.open .card-body { display: block; }
+
+  .card-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+  }
+
+  .card-tab {
+    padding: 0.75rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2.5px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .card-tab.active {
+    color: var(--green);
+    border-bottom-color: var(--green);
+  }
+
+  .card-content {
+    padding: 1.5rem;
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .section-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--green);
+    margin-bottom: 0.5rem;
+    margin-top: 1.25rem;
+  }
+
+  .section-label:first-child { margin-top: 0; }
+
+  .section-text {
+    font-size: 0.92rem;
+    line-height: 1.75;
+    color: var(--text);
+  }
+
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 0.4rem;
+  }
+
+  .tag {
+    padding: 4px 12px;
+    background: var(--green-light);
+    color: var(--green-dark);
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 500;
+  }
+
+  .warning-box {
+    background: #fef9e7;
+    border: 1.5px solid #f5c518;
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 1rem;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #7a5c00;
+    margin-top: 1rem;
+  }
+
+  .tip-box {
+    background: var(--green-light);
+    border-left: 3px solid var(--green);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 0.85rem 1rem;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--green-dark);
+    margin-top: 1rem;
+  }
+
+  footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border);
+    background: var(--white);
+  }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    ВрачПонятно
+    <span>DoctorPlain</span>
+  </div>
+  <div class="lang-toggle">
+    <button class="lang-btn active" onclick="setLang('ru')">RU</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+  </div>
+</header>
+
+<div class="hero">
+  <h1 id="hero-title">Медицина — понятным языком</h1>
+  <p id="hero-sub">Объяснения диагнозов для врачей и пациентов. Без сложных терминов — только суть.</p>
+
+  <div class="audience-toggle">
+    <button class="audience-btn active" onclick="setAudience('patient')" id="btn-patient">Я пациент</button>
+    <button class="audience-btn" onclick="setAudience('doctor')" id="btn-doctor">Я врач</button>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" id="search-input" placeholder="Найти диагноз..." oninput="filterCards()">
+    <button onclick="filterCards()" id="search-btn">Найти</button>
+  </div>
+</div>
+
+<div class="diagnoses" id="diagnoses-list">
+
+  <!-- ГИПЕРТОНИЯ -->
+  <div class="diagnosis-card" data-name-ru="гипертония артериальная гипертензия давление" data-name-en="hypertension blood pressure">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-header-left">
+        <div class="card-icon">&#x2764;&#xfe0f;</div>
+        <div>
+          <div class="card-title" id="card1-title">Гипертония</div>
+          <div class="card-subtitle" id="card1-sub">Артериальная гипертензия</div>
+        </div>
+      </div>
+      <div class="card-arrow">&#9660;</div>
+    </div>
+    <div class="card-body">
+      <div class="card-tabs">
+        <div class="card-tab active" onclick="switchTab(this, 'c1-patient')" id="c1-tab-patient">Пациенту</div>
+        <div class="card-tab" onclick="switchTab(this, 'c1-doctor')" id="c1-tab-doctor">Врачу</div>
+      </div>
+      <div class="card-content">
+        <div class="tab-panel active" id="c1-patient">
+          <div class="section-label">Что это такое?</div>
+          <div class="section-text">Ваше сердце качает кровь по сосудам. Когда давление этой крови на стенки сосудов слишком высокое — это и есть гипертония. Как вода под большим напором в трубе.</div>
+          <div class="section-label">Как это чувствуется?</div>
+          <div class="section-text">Головная боль (особенно затылок), шум в ушах, мелькание перед глазами, учащённое сердцебиение. Иногда — никаких симптомов вообще.</div>
+          <div class="section-label">Что нужно делать?</div>
+          <div class="tag-row">
+            <span class="tag">Принимать таблетки ежедневно</span>
+            <span class="tag">Меньше соли</span>
+            <span class="tag">Измерять давление дома</span>
+            <span class="tag">Не курить</span>
+          </div>
+          <div class="warning-box">Если давление выше 180/110 — немедленно вызовите скорую. Это опасно.</div>
+        </div>
+        <div class="tab-panel" id="c1-doctor">
+          <div class="section-label">Как объяснить пациенту</div>
+          <div class="section-text">Используйте аналогию с водопроводом: высокое давление в трубах изнашивает их — так и сосуды. Объясните, что лечение пожизненное, даже если симптомов нет.</div>
+          <div class="section-label">Ключевые точки контроля</div>
+          <div class="tag-row">
+            <span class="tag">АД &lt; 140/90 — цель</span>
+            <span class="tag">ЧСС, ЭКГ</span>
+            <span class="tag">Суточное мониторирование</span>
+            <span class="tag">Анализ мочи (белок)</span>
+          </div>
+          <div class="section-label">Что часто забывают сказать</div>
+          <div class="section-text">Пациенты часто бросают таблетки, когда давление нормализуется. Чётко объясните: нормализация — результат лечения, а не его повод отменить.</div>
+          <div class="tip-box">Спросите пациента: «Вы измеряете давление дома?» — это сразу покажет вовлечённость в лечение.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ДИАБЕТ -->
+  <div class="diagnosis-card" data-name-ru="сахарный диабет 2 типа глюкоза сахар" data-name-en="diabetes type 2 glucose sugar">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-header-left">
+        <div class="card-icon">&#x1f9ec;</div>
+        <div>
+          <div class="card-title" id="card2-title">Сахарный диабет 2 типа</div>
+          <div class="card-subtitle" id="card2-sub">Нарушение обмена глюкозы</div>
+        </div>
+      </div>
+      <div class="card-arrow">&#9660;</div>
+    </div>
+    <div class="card-body">
+      <div class="card-tabs">
+        <div class="card-tab active" onclick="switchTab(this, 'c2-patient')" id="c2-tab-patient">Пациенту</div>
+        <div class="card-tab" onclick="switchTab(this, 'c2-doctor')" id="c2-tab-doctor">Врачу</div>
+      </div>
+      <div class="card-content">
+        <div class="tab-panel active" id="c2-patient">
+          <div class="section-label">Что это такое?</div>
+          <div class="section-text">В вашей крови слишком много сахара. Организм вырабатывает инсулин — ключ, который открывает клетки для сахара. При диабете 2 типа замок сломан: ключ есть, но дверь не открывается.</div>
+          <div class="section-label">Как это чувствуется?</div>
+          <div class="section-text">Сильная жажда, частое мочеиспускание, усталость, плохо заживают ранки, зуд кожи. Часто — никаких симптомов на ранних стадиях.</div>
+          <div class="section-label">Что нужно делать?</div>
+          <div class="tag-row">
+            <span class="tag">Диета — меньше сладкого и белого хлеба</span>
+            <span class="tag">Двигаться каждый день</span>
+            <span class="tag">Контролировать сахар</span>
+            <span class="tag">Принимать таблетки</span>
+          </div>
+          <div class="warning-box">Если кружится голова, сильная слабость, дрожь — возможно низкий сахар. Съешьте кусочек сахара или выпейте сладкое.</div>
+        </div>
+        <div class="tab-panel" id="c2-doctor">
+          <div class="section-label">Как объяснить пациенту</div>
+          <div class="section-text">Аналогия с ключом и замком работает лучше биохимических объяснений. Подчеркните: это не «сладкоежка заболел» — это обмен веществ, часто наследственный.</div>
+          <div class="section-label">Ключевые показатели</div>
+          <div class="tag-row">
+            <span class="tag">HbA1c &lt; 7% — цель</span>
+            <span class="tag">Гликемия натощак</span>
+            <span class="tag">Липидный профиль</span>
+            <span class="tag">Функция почек</span>
+          </div>
+          <div class="section-label">Что часто забывают сказать</div>
+          <div class="section-text">Пациенты не понимают разницу между гипо- и гипергликемией. Дайте конкретную инструкцию: при каких симптомах что делать.</div>
+          <div class="tip-box">Спросите: «Как вы питаетесь в обычный день?» — это честнее, чем «соблюдаете ли диету».</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ГАСТРИТ -->
+  <div class="diagnosis-card" data-name-ru="гастрит желудок воспаление живот" data-name-en="gastritis stomach inflammation">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-header-left">
+        <div class="card-icon">&#x1fac0;</div>
+        <div>
+          <div class="card-title" id="card3-title">Гастрит</div>
+          <div class="card-subtitle" id="card3-sub">Воспаление слизистой желудка</div>
+        </div>
+      </div>
+      <div class="card-arrow">&#9660;</div>
+    </div>
+    <div class="card-body">
+      <div class="card-tabs">
+        <div class="card-tab active" onclick="switchTab(this, 'c3-patient')" id="c3-tab-patient">Пациенту</div>
+        <div class="card-tab" onclick="switchTab(this, 'c3-doctor')" id="c3-tab-doctor">Врачу</div>
+      </div>
+      <div class="card-content">
+        <div class="tab-panel active" id="c3-patient">
+          <div class="section-label">Что это такое?</div>
+          <div class="section-text">Внутри желудка есть защитная слизистая оболочка — как мягкая подкладка. При гастрите она воспаляется. Желудочный сок начинает раздражать стенки желудка.</div>
+          <div class="section-label">Как это чувствуется?</div>
+          <div class="section-text">Боль или жжение в животе (особенно натощак или после еды), тошнота, тяжесть после еды, изжога, отрыжка.</div>
+          <div class="section-label">Что нужно делать?</div>
+          <div class="tag-row">
+            <span class="tag">Есть регулярно, не голодать</span>
+            <span class="tag">Не есть острое и жирное</span>
+            <span class="tag">Бросить курить</span>
+            <span class="tag">Не принимать аспирин без нужды</span>
+          </div>
+          <div class="warning-box">Кровь в стуле (чёрный стул) или рвота с кровью — срочно к врачу. Это не обычный гастрит.</div>
+        </div>
+        <div class="tab-panel" id="c3-doctor">
+          <div class="section-label">Как объяснить пациенту</div>
+          <div class="section-text">Аналогия с подкладкой в куртке понятна всем. Подчеркните роль H. pylori — многие удивляются, что гастрит бывает инфекционным и лечится антибиотиками.</div>
+          <div class="section-label">Ключевые точки</div>
+          <div class="tag-row">
+            <span class="tag">Тест на H. pylori</span>
+            <span class="tag">НПВП в анамнезе?</span>
+            <span class="tag">ФГДС при тревожных симптомах</span>
+            <span class="tag">ИПП — курс</span>
+          </div>
+          <div class="section-label">Что часто забывают сказать</div>
+          <div class="section-text">Пациенты думают, что гастрит — навсегда. Объясните: при H. pylori — эрадикация даёт реальное излечение. Это мотивирует соблюдать схему антибиотиков.</div>
+          <div class="tip-box">Спросите про НПВП и аспирин — пациенты часто не считают их «настоящими лекарствами» и не упоминают сами.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="no-results" class="hidden" style="text-align:center; padding: 2rem; color: var(--text-muted); font-size: 0.9rem;">
+    Диагноз не найден. Попробуйте другой запрос.
+  </div>
+
+</div>
+
+<footer>
+  ВрачПонятно / DoctorPlain &mdash; медицина понятным языком<br>
+  <span style="font-size:0.75rem; opacity:0.6;">Проект студента-медика &bull; Не заменяет консультацию врача</span>
+</footer>
+
+<script>
+  var lang = 'ru';
+  var audience = 'patient';
+
+  var texts = {
+    ru: {
+      heroTitle: 'Медицина — понятным языком',
+      heroSub: 'Объяснения диагнозов для врачей и пациентов. Без сложных терминов — только суть.',
+      btnPatient: 'Я пациент',
+      btnDoctor: 'Я врач',
+      searchPlaceholder: 'Найти диагноз...',
+      searchBtn: 'Найти',
+      noResults: 'Диагноз не найден. Попробуйте другой запрос.',
+      cards: [
+        { title: 'Гипертония', sub: 'Артериальная гипертензия' },
+        { title: 'Сахарный диабет 2 типа', sub: 'Нарушение обмена глюкозы' },
+        { title: 'Гастрит', sub: 'Воспаление слизистой желудка' }
+      ],
+      tabPatient: 'Пациенту',
+      tabDoctor: 'Врачу'
+    },
+    en: {
+      heroTitle: 'Medicine in plain language',
+      heroSub: 'Diagnosis explanations for doctors and patients. No jargon — just the essentials.',
+      btnPatient: 'I am a patient',
+      btnDoctor: 'I am a doctor',
+      searchPlaceholder: 'Search diagnosis...',
+      searchBtn: 'Search',
+      noResults: 'Diagnosis not found. Try a different search.',
+      cards: [
+        { title: 'Hypertension', sub: 'High blood pressure' },
+        { title: 'Type 2 Diabetes', sub: 'Glucose metabolism disorder' },
+        { title: 'Gastritis', sub: 'Stomach lining inflammation' }
+      ],
+      tabPatient: 'Patient',
+      tabDoctor: 'Doctor'
+    }
+  };
+
+  function setLang(l) {
+    lang = l;
+    document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.remove('active'); });
+    event.target.classList.add('active');
+    var t = texts[l];
+    document.getElementById('hero-title').textContent = t.heroTitle;
+    document.getElementById('hero-sub').textContent = t.heroSub;
+    document.getElementById('btn-patient').textContent = t.btnPatient;
+    document.getElementById('btn-doctor').textContent = t.btnDoctor;
+    document.getElementById('search-input').placeholder = t.searchPlaceholder;
+    document.getElementById('search-btn').textContent = t.searchBtn;
+    document.getElementById('no-results').textContent = t.noResults;
+    for (var i = 1; i <= 3; i++) {
+      document.getElementById('card' + i + '-title').textContent = t.cards[i-1].title;
+      document.getElementById('card' + i + '-sub').textContent = t.cards[i-1].sub;
+      document.getElementById('c' + i + '-tab-patient').textContent = t.tabPatient;
+      document.getElementById('c' + i + '-tab-doctor').textContent = t.tabDoctor;
+    }
+  }
+
+  function setAudience(a) {
+    audience = a;
+    document.querySelectorAll('.audience-btn').forEach(function(b) { b.classList.remove('active'); });
+    event.target.classList.add('active');
+    document.querySelectorAll('.diagnosis-card').forEach(function(card) {
+      var isOpen = card.classList.contains('open');
+      if (isOpen) {
+        var panels = card.querySelectorAll('.tab-panel');
+        var tabs = card.querySelectorAll('.card-tab');
+        var targetPanel = a === 'patient' ? 0 : 1;
+        panels.forEach(function(p) { p.classList.remove('active'); });
+        tabs.forEach(function(t) { t.classList.remove('active'); });
+        panels[targetPanel].classList.add('active');
+        tabs[targetPanel].classList.add('active');
+      }
+    });
+  }
+
+  function toggleCard(header) {
+    var card = header.parentElement;
+    var wasOpen = card.classList.contains('open');
+    card.classList.toggle('open');
+    if (!wasOpen) {
+      var panels = card.querySelectorAll('.tab-panel');
+      var tabs = card.querySelectorAll('.card-tab');
+      var targetPanel = audience === 'patient' ? 0 : 1;
+      panels.forEach(function(p) { p.classList.remove('active'); });
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      panels[targetPanel].classList.add('active');
+      tabs[targetPanel].classList.add('active');
+    }
+  }
+
+  function switchTab(tabEl, panelId) {
+    var card = tabEl.closest('.diagnosis-card');
+    card.querySelectorAll('.card-tab').forEach(function(t) { t.classList.remove('active'); });
+    card.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+    tabEl.classList.add('active');
+    document.getElementById(panelId).classList.add('active');
+  }
+
+  function filterCards() {
+    var query = document.getElementById('search-input').value.toLowerCase().trim();
+    var cards = document.querySelectorAll('.diagnosis-card');
+    var visible = 0;
+    cards.forEach(function(card) {
+      var nameRu = card.getAttribute('data-name-ru') || '';
+      var nameEn = card.getAttribute('data-name-en') || '';
+      if (!query || nameRu.includes(query) || nameEn.includes(query)) {
+        card.classList.remove('hidden');
+        visible++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+    document.getElementById('no-results').classList.toggle('hidden', visible > 0);
+  }
+</script>
+</body>
+</html>
